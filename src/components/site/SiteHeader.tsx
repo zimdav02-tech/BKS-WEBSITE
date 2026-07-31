@@ -47,9 +47,7 @@ export function SiteHeader() {
             <Link to="/auth">Log in</Link>
           </Button>
           <Button asChild variant="gold">
-            <Link to="/auth" search={{ mode: "register" }}>
-              Get started
-            </Link>
+            <Link to="/auth">Get started</Link>
           </Button>
         </div>
 
