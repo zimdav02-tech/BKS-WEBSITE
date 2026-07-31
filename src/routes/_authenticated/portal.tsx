@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { CalendarCheck, CreditCard, FileText, LifeBuoy, LogOut } from "lucide-react";
+import { CalendarCheck, CreditCard, FileText, LifeBuoy, LogOut, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useMyRoles } from "@/hooks/useAdmin";
 
 export const Route = createFileRoute("/_authenticated/portal")({
   component: Portal,
@@ -17,6 +18,7 @@ const tiles = [
 function Portal() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
+  const { isStaff } = useMyRoles();
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -28,6 +30,14 @@ function Portal() {
             </span>
             <span className="font-display text-sm font-bold">Customer Portal</span>
           </Link>
+          <div className="flex items-center gap-2">
+          {isStaff && (
+            <Button asChild variant="goldOutline" size="sm">
+              <Link to="/admin">
+                <ShieldCheck /> Admin console
+              </Link>
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -38,6 +48,7 @@ function Portal() {
           >
             <LogOut /> Sign out
           </Button>
+          </div>
         </div>
       </header>
 
