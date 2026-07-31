@@ -37,7 +37,7 @@ function AuthPage() {
     });
   }, [navigate]);
 
-  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSignIn(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setLoading(true);
@@ -46,12 +46,15 @@ function AuthPage() {
       password: String(form.get("password")),
     });
     setLoading(false);
-    if (error) return toast.error("Could not sign in", { description: error.message });
+    if (error) {
+      toast.error("Could not sign in", { description: error.message });
+      return;
+    }
     toast.success("Welcome back");
     navigate({ to: "/portal" });
   }
 
-  async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSignUp(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     setLoading(true);
@@ -64,16 +67,22 @@ function AuthPage() {
       },
     });
     setLoading(false);
-    if (error) return toast.error("Could not create account", { description: error.message });
+    if (error) {
+      toast.error("Could not create account", { description: error.message });
+      return;
+    }
     toast.success("Account created", { description: "You can now sign in." });
     navigate({ to: "/portal" });
   }
 
-  async function handleGoogle() {
+  async function handleGoogle(): Promise<void> {
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
-    if (result.error) return toast.error("Google sign-in failed");
+    if (result.error) {
+      toast.error("Google sign-in failed");
+      return;
+    }
     if (result.redirected) return;
     navigate({ to: "/portal" });
   }
