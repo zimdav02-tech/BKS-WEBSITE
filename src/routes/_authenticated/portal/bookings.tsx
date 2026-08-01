@@ -30,7 +30,7 @@ function Bookings() {
       (b) =>
         !term ||
         b.reference.toLowerCase().includes(term) ||
-        b.title.toLowerCase().includes(term) ||
+        (b.title ?? "").toLowerCase().includes(term) ||
         b.status.toLowerCase().includes(term),
     );
   }, [data, q]);
