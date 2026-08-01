@@ -20,6 +20,7 @@ import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
 import { Route as AuthenticatedPortalBookingsRouteImport } from './routes/_authenticated/portal/bookings'
 import { Route as AuthenticatedPortalItineraryRouteImport } from './routes/_authenticated/portal/itinerary'
+import { Route as AuthenticatedPortalTransfersRouteImport } from './routes/_authenticated/portal/transfers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -78,6 +79,12 @@ const AuthenticatedPortalItineraryRoute =
     path: '/portal/itinerary',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPortalTransfersRoute =
+  AuthenticatedPortalTransfersRouteImport.update({
+    id: '/portal/transfers',
+    path: '/portal/transfers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/services/': typeof ServicesIndexRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/portal/transfers': typeof AuthenticatedPortalTransfersRoute
   '/portal/': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +109,7 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesIndexRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/portal/transfers': typeof AuthenticatedPortalTransfersRoute
   '/portal': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRoutesById {
@@ -115,6 +124,7 @@ export interface FileRoutesById {
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/_authenticated/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/_authenticated/portal/transfers': typeof AuthenticatedPortalTransfersRoute
   '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/portal/bookings'
     | '/portal/itinerary'
+    | '/portal/transfers'
     | '/portal/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/portal/bookings'
     | '/portal/itinerary'
+    | '/portal/transfers'
     | '/portal'
   id:
     | '__root__'
@@ -154,6 +166,7 @@ export interface FileRouteTypes {
     | '/services/'
     | '/_authenticated/portal/bookings'
     | '/_authenticated/portal/itinerary'
+    | '/_authenticated/portal/transfers'
     | '/_authenticated/portal/'
   fileRoutesById: FileRoutesById
 }
@@ -246,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPortalItineraryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/portal/transfers': {
+      id: '/_authenticated/portal/transfers'
+      path: '/portal/transfers'
+      fullPath: '/portal/transfers'
+      preLoaderRoute: typeof AuthenticatedPortalTransfersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -253,6 +273,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedPortalBookingsRoute: typeof AuthenticatedPortalBookingsRoute
   AuthenticatedPortalItineraryRoute: typeof AuthenticatedPortalItineraryRoute
+  AuthenticatedPortalTransfersRoute: typeof AuthenticatedPortalTransfersRoute
   AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
 }
 
@@ -260,6 +281,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedPortalBookingsRoute: AuthenticatedPortalBookingsRoute,
   AuthenticatedPortalItineraryRoute: AuthenticatedPortalItineraryRoute,
+  AuthenticatedPortalTransfersRoute: AuthenticatedPortalTransfersRoute,
   AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
 }
 
