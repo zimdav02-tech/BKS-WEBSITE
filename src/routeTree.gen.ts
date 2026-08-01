@@ -15,9 +15,12 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedPortalRouteImport } from './routes/_authenticated/portal'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
+import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
+import { Route as AuthenticatedPortalBookingsRouteImport } from './routes/_authenticated/portal/bookings'
+import { Route as AuthenticatedPortalItineraryRouteImport } from './routes/_authenticated/portal/itinerary'
+import { Route as AuthenticatedPortalTransfersRouteImport } from './routes/_authenticated/portal/transfers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -48,11 +51,6 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedPortalRoute = AuthenticatedPortalRouteImport.update({
-  id: '/portal',
-  path: '/portal',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
@@ -63,6 +61,30 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPortalIndexRoute =
+  AuthenticatedPortalIndexRouteImport.update({
+    id: '/portal/',
+    path: '/portal/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalBookingsRoute =
+  AuthenticatedPortalBookingsRouteImport.update({
+    id: '/portal/bookings',
+    path: '/portal/bookings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalItineraryRoute =
+  AuthenticatedPortalItineraryRouteImport.update({
+    id: '/portal/itinerary',
+    path: '/portal/itinerary',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPortalTransfersRoute =
+  AuthenticatedPortalTransfersRouteImport.update({
+    id: '/portal/transfers',
+    path: '/portal/transfers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -70,9 +92,12 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/portal': typeof AuthenticatedPortalRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
+  '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/portal/transfers': typeof AuthenticatedPortalTransfersRoute
+  '/portal/': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -80,9 +105,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/portal': typeof AuthenticatedPortalRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services': typeof ServicesIndexRoute
+  '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
+  '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/portal/transfers': typeof AuthenticatedPortalTransfersRoute
+  '/portal': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,9 +120,12 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/portal': typeof AuthenticatedPortalRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
+  '/_authenticated/portal/bookings': typeof AuthenticatedPortalBookingsRoute
+  '/_authenticated/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
+  '/_authenticated/portal/transfers': typeof AuthenticatedPortalTransfersRoute
+  '/_authenticated/portal/': typeof AuthenticatedPortalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -104,9 +135,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/admin'
-    | '/portal'
     | '/services/$slug'
     | '/services/'
+    | '/portal/bookings'
+    | '/portal/itinerary'
+    | '/portal/transfers'
+    | '/portal/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -114,9 +148,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/admin'
-    | '/portal'
     | '/services/$slug'
     | '/services'
+    | '/portal/bookings'
+    | '/portal/itinerary'
+    | '/portal/transfers'
+    | '/portal'
   id:
     | '__root__'
     | '/'
@@ -125,9 +162,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/_authenticated/admin'
-    | '/_authenticated/portal'
     | '/services/$slug'
     | '/services/'
+    | '/_authenticated/portal/bookings'
+    | '/_authenticated/portal/itinerary'
+    | '/_authenticated/portal/transfers'
+    | '/_authenticated/portal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,13 +224,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/portal': {
-      id: '/_authenticated/portal'
-      path: '/portal'
-      fullPath: '/portal'
-      preLoaderRoute: typeof AuthenticatedPortalRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/services/': {
       id: '/services/'
       path: '/services'
@@ -205,17 +238,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/portal/': {
+      id: '/_authenticated/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof AuthenticatedPortalIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/bookings': {
+      id: '/_authenticated/portal/bookings'
+      path: '/portal/bookings'
+      fullPath: '/portal/bookings'
+      preLoaderRoute: typeof AuthenticatedPortalBookingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/itinerary': {
+      id: '/_authenticated/portal/itinerary'
+      path: '/portal/itinerary'
+      fullPath: '/portal/itinerary'
+      preLoaderRoute: typeof AuthenticatedPortalItineraryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/portal/transfers': {
+      id: '/_authenticated/portal/transfers'
+      path: '/portal/transfers'
+      fullPath: '/portal/transfers'
+      preLoaderRoute: typeof AuthenticatedPortalTransfersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedPortalRoute: typeof AuthenticatedPortalRoute
+  AuthenticatedPortalBookingsRoute: typeof AuthenticatedPortalBookingsRoute
+  AuthenticatedPortalItineraryRoute: typeof AuthenticatedPortalItineraryRoute
+  AuthenticatedPortalTransfersRoute: typeof AuthenticatedPortalTransfersRoute
+  AuthenticatedPortalIndexRoute: typeof AuthenticatedPortalIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedPortalRoute: AuthenticatedPortalRoute,
+  AuthenticatedPortalBookingsRoute: AuthenticatedPortalBookingsRoute,
+  AuthenticatedPortalItineraryRoute: AuthenticatedPortalItineraryRoute,
+  AuthenticatedPortalTransfersRoute: AuthenticatedPortalTransfersRoute,
+  AuthenticatedPortalIndexRoute: AuthenticatedPortalIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
