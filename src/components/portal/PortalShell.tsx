@@ -167,7 +167,7 @@ export function PortalShell() {
                   <Plus /> New booking
                 </Button>
               </QuickActionSheet>
-              <Link to="/portal/profile" aria-label="Profile">
+              <Link to="/portal" aria-label="Profile">
                 <Avatar className="size-9 border border-border">
                   <AvatarFallback className="bg-secondary text-xs font-semibold text-secondary-foreground">
                     {initials}
