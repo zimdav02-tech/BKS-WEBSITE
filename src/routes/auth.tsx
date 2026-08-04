@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -30,6 +31,10 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [showReset, setShowReset] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -87,6 +92,21 @@ function AuthPage() {
     navigate({ to: "/portal" });
   }
 
+  async function handleResetPassword(): Promise<void> {
+    if (!resetEmail) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error("Reset link could not be sent", { description: error.message });
+      return;
+    }
+    toast.success("Password reset link sent", { description: "Check your email to continue." });
+    setShowReset(false);
+  }
+
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="hidden flex-col justify-between bg-gradient-ink p-12 text-ink-foreground lg:flex">
@@ -131,15 +151,17 @@ function AuthPage() {
                   <Input id="si-email" name="email" type="email" required autoComplete="email" />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="si-password">Password</Label>
-                  <Input
+                  <div className="flex items-center justify-between"><Label htmlFor="si-password">Password</Label><Button type="button" variant="link" className="h-auto p-0 text-xs" onClick={() => setShowReset((value) => !value)}>Forgot password?</Button></div>
+                  <div className="relative"><Input
                     id="si-password"
                     name="password"
-                    type="password"
+                    type={showSignInPassword ? "text" : "password"}
                     required
                     autoComplete="current-password"
-                  />
+                    className="pr-10"
+                  /><Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0" onClick={() => setShowSignInPassword((value) => !value)} aria-label={showSignInPassword ? "Hide password" : "Show password"}>{showSignInPassword ? <EyeOff /> : <Eye />}</Button></div>
                 </div>
+                {showReset && <div className="grid gap-2 rounded-lg border bg-muted/40 p-3"><Label htmlFor="reset-email">Account email</Label><Input id="reset-email" type="email" value={resetEmail} onChange={(event) => setResetEmail(event.target.value)} placeholder="you@example.com" /><Button type="button" variant="outline" disabled={loading || !resetEmail} onClick={() => void handleResetPassword()}>Send reset link</Button></div>}
                 <Button type="submit" variant="gold" size="lg" disabled={loading}>
                   {loading ? "Signing in…" : "Sign in"}
                 </Button>
@@ -158,14 +180,15 @@ function AuthPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="su-password">Password</Label>
-                  <Input
+                  <div className="relative"><Input
                     id="su-password"
                     name="password"
-                    type="password"
+                    type={showSignUpPassword ? "text" : "password"}
                     required
-                    minLength={6}
+                    minLength={8}
                     autoComplete="new-password"
-                  />
+                    className="pr-10"
+                  /><Button type="button" variant="ghost" size="icon" className="absolute right-0 top-0" onClick={() => setShowSignUpPassword((value) => !value)} aria-label={showSignUpPassword ? "Hide password" : "Show password"}>{showSignUpPassword ? <EyeOff /> : <Eye />}</Button></div>
                 </div>
                 <Button type="submit" variant="gold" size="lg" disabled={loading}>
                   {loading ? "Creating account…" : "Create account"}
