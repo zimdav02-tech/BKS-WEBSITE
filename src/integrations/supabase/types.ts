@@ -627,6 +627,66 @@ export type Database = {
         }
         Relationships: []
       }
+      service_requests: {
+        Row: {
+          assigned_to: string | null
+          budget: number | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          details: Json
+          id: string
+          message: string | null
+          preferred_date: string | null
+          reference: string
+          staff_notes: string | null
+          status: Database["public"]["Enums"]["request_status"]
+          subject: string
+          type: Database["public"]["Enums"]["request_type"]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          budget?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          message?: string | null
+          preferred_date?: string | null
+          reference?: string
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          subject: string
+          type?: Database["public"]["Enums"]["request_type"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          budget?: number | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+          message?: string | null
+          preferred_date?: string | null
+          reference?: string
+          staff_notes?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          subject?: string
+          type?: Database["public"]["Enums"]["request_type"]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -710,6 +770,15 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      notify_staff: {
+        Args: {
+          _action_url: string
+          _category: string
+          _description: string
+          _title: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:
@@ -751,6 +820,16 @@ export type Database = {
         | "approved"
         | "rejected"
         | "refunded"
+      request_status: "new" | "in_review" | "approved" | "rejected" | "closed"
+      request_type:
+        | "enquiry"
+        | "support"
+        | "cargo"
+        | "get_cash"
+        | "construction"
+        | "real_estate"
+        | "tour"
+        | "other"
       service_kind:
         | "apartment"
         | "vehicle"
@@ -938,6 +1017,17 @@ export const Constants = {
         "approved",
         "rejected",
         "refunded",
+      ],
+      request_status: ["new", "in_review", "approved", "rejected", "closed"],
+      request_type: [
+        "enquiry",
+        "support",
+        "cargo",
+        "get_cash",
+        "construction",
+        "real_estate",
+        "tour",
+        "other",
       ],
       service_kind: [
         "apartment",
