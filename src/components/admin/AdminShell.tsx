@@ -128,7 +128,7 @@ export function AdminShell() {
               <Input className="h-10 bg-background pl-9" placeholder="Search bookings, customers, vehicles…" aria-label="Global search" />
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <Button variant="ghost" size="icon" aria-label="Notifications" asChild><Link to="/admin/notifications"><Bell /></Link></Button>
+              <Button variant="ghost" size="icon" aria-label="Notifications" asChild><Link to="/admin/$module" params={{ module: "notifications" }}><Bell /></Link></Button>
               <div className="hidden text-right sm:block"><p className="text-xs font-semibold capitalize">{roleLabel}</p><p className="text-[10px] text-muted-foreground">Secure session</p></div>
               <Avatar className="size-9 border"><AvatarFallback className="bg-secondary text-secondary-foreground"><ShieldCheck className="size-4" /></AvatarFallback></Avatar>
             </div>
