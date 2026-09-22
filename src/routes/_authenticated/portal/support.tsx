@@ -63,7 +63,6 @@ function SupportPage() {
   return (
     <div className="space-y-7">
       <PageHeading
-        eyebrow="Concierge"
         title="Support"
         description="Message the BKS team. Replies appear here instantly."
       />
