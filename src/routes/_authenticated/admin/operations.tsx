@@ -1,7 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, Car, CheckCircle2, MapPin, Plane, Radio } from "lucide-react";
-import { AdminPageHeading, AdminPanel, StatusDot } from "@/components/admin/AdminUI";
+import { OperationsCenter } from "@/components/admin/OperationsCenter";
 
-export const Route = createFileRoute("/_authenticated/admin/operations")({ head: () => ({ meta: [{ title: "Operations Centre | BKS Admin" }, { name: "description", content: "Live arrivals, departures, transfers and operational alerts." }, { property: "og:title", content: "BKS Operations Centre" }, { property: "og:description", content: "Real-time coordination of BKS services." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: OperationsCentre });
-const lanes = [{ title: "Arrivals", icon: Plane, jobs: [["09:45", "Chanda Holdings", "ZN 408 · KKIA", "Delayed 25m"], ["11:20", "M. Phiri", "ET 863 · KKIA", "Driver assigned"]] }, { title: "Departures", icon: MapPin, jobs: [["10:30", "Naomi Banda", "Leopards Hill → KKIA", "En route"], ["14:00", "KLM Consulting", "Roma → KKIA", "Awaiting driver"]] }, { title: "Vehicle movements", icon: Car, jobs: [["Now", "Toyota Fortuner BAX 4217", "Kenneth Kaunda Airport", "In transit"], ["12:15", "Toyota Hilux BCD 8082", "Service Centre", "Maintenance"]] }];
-function OperationsCentre() { return <div className="space-y-7"><AdminPageHeading eyebrow="Live command" title="Operations Centre" description="Coordinate arrivals, departures, fleet movements and exceptions without refreshing the page." action={<div className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1.5 text-xs font-bold"><Radio className="size-3 animate-pulse" /> Live updates active</div>} /><div className="grid gap-5 xl:grid-cols-3">{lanes.map((lane) => <AdminPanel key={lane.title}><div className="flex items-center gap-2"><lane.icon className="size-4" /><h2 className="font-display font-bold">{lane.title}</h2><span className="ml-auto text-xs text-muted-foreground">{lane.jobs.length} active</span></div><div className="mt-4 space-y-3">{lane.jobs.map((job) => <article key={job[1]} className="rounded-md border bg-muted/40 p-4"><div className="flex justify-between gap-3"><span className="text-xs font-bold">{job[0]}</span><StatusDot label={job[3]} tone={job[3].includes("Awaiting") ? "danger" : job[3].includes("Delayed") ? "warning" : "success"} /></div><p className="mt-3 text-sm font-semibold">{job[1]}</p><p className="mt-1 text-xs text-muted-foreground">{job[2]}</p></article>)}</div></AdminPanel>)}</div><div className="grid gap-5 lg:grid-cols-2"><AdminPanel><div className="flex items-center gap-2"><AlertTriangle className="size-4 text-destructive" /><h2 className="font-display font-bold">Operational alerts</h2></div><p className="mt-5 text-sm font-semibold">Unassigned airport departure</p><p className="text-xs text-muted-foreground">Due in 2h 14m · KLM Consulting</p></AdminPanel><AdminPanel><div className="flex items-center gap-2"><CheckCircle2 className="size-4 text-primary" /><h2 className="font-display font-bold">Service health</h2></div><div className="mt-5 grid grid-cols-2 gap-4"><div><p className="text-3xl font-bold">96%</p><p className="text-xs text-muted-foreground">On-time pickups</p></div><div><p className="text-3xl font-bold">8.4m</p><p className="text-xs text-muted-foreground">Avg. response</p></div></div></AdminPanel></div></div>; }
+export const Route = createFileRoute("/_authenticated/admin/operations")({
+  head: () => ({
+    meta: [
+      { title: "Operations Centre | BKS Admin" },
+      {
+        name: "description",
+        content: "Live arrivals, departures, transfers and operational alerts.",
+      },
+      { property: "og:title", content: "BKS Operations Centre" },
+      { property: "og:description", content: "Real-time coordination of BKS services." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: OperationsCentrePage,
+});
+
+function OperationsCentrePage() {
+  return <OperationsCenter />;
+}

@@ -59,6 +59,8 @@ export const adminNav: AdminNavItem[] = [
 
 export const moduleDetails: Record<string, { title: string; description: string; icon: LucideIcon }> = {
   executive: { title: "Executive Dashboard", description: "Strategic performance, revenue and operational health at a glance.", icon: Gauge },
+  bookings: { title: "Booking Management", description: "Review, approve and coordinate every BKS booking from one workspace.", icon: BookOpenCheck },
+  requests: { title: "Requests", description: "Triage enquiries, support tickets and service requests as they arrive.", icon: ClipboardList },
   apartments: { title: "Apartment Management", description: "Inventory, occupancy, housekeeping, maintenance and reservation readiness.", icon: Building2 },
   vehicles: { title: "Fleet Management", description: "Vehicle availability, assignments, maintenance and utilization.", icon: Car },
   transfers: { title: "Airport Transfers", description: "Coordinate flights, drivers, vehicles and pickup milestones.", icon: MapPinned },

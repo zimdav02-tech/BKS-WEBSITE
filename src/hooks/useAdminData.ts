@@ -21,11 +21,14 @@ const LIVE_TABLES = [
   "conversations",
   "messages",
   "profiles",
+  "apartments",
+  "vehicles",
+  "activity_events",
 ] as const;
 
 /** Staff-wide realtime channel: any change refreshes admin views. */
 export function useAdminRealtime() {
-  useRealtimeInvalidate("admin-live", LIVE_TABLES);
+  return useRealtimeInvalidate("admin-live", LIVE_TABLES);
 }
 
 export function useAdminBookings() {
@@ -127,6 +130,43 @@ export function useAdminConversations() {
       return (data ?? []) as (Tables<"conversations"> & {
         messages: Pick<Tables<"messages">, "id" | "body" | "created_at" | "sender_id" | "read_at">[];
       })[];
+    },
+  });
+}
+
+export function useAdminApartments() {
+  return useQuery({
+    queryKey: ["admin", "apartments"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("apartments").select("*").order("name");
+      if (error) throw error;
+      return (data ?? []) as Tables<"apartments">[];
+    },
+  });
+}
+
+export function useAdminVehicles() {
+  return useQuery({
+    queryKey: ["admin", "vehicles"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("vehicles").select("*").order("name");
+      if (error) throw error;
+      return (data ?? []) as Tables<"vehicles">[];
+    },
+  });
+}
+
+export function useAdminActivity() {
+  return useQuery({
+    queryKey: ["admin", "activity"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("activity_events")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(40);
+      if (error) throw error;
+      return (data ?? []) as Tables<"activity_events">[];
     },
   });
 }
