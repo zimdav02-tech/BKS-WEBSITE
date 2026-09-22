@@ -123,6 +123,43 @@ REVOKE ALL ON FUNCTION public.grant_designated_super_admin(uuid) FROM PUBLIC, an
 REVOKE ALL ON FUNCTION public.ensure_designated_super_admin() FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.ensure_designated_super_admin() TO authenticated;
 
+-- Reaffirm SECURITY DEFINER helpers so RLS never recurses into user_roles.
+CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role public.app_role)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role);
+$$;
+
+CREATE OR REPLACE FUNCTION public.is_super_admin(_user_id UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = 'super_admin');
+$$;
+
+CREATE OR REPLACE FUNCTION public.is_staff(_user_id UUID)
+RETURNS BOOLEAN LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.user_roles
+    WHERE user_id = _user_id
+      AND role IN ('super_admin','admin','manager','support','finance','operations')
+  );
+$$;
+
+REVOKE ALL ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.is_super_admin(uuid) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.is_staff(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_super_admin(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.is_staff(uuid) TO authenticated;
+
+-- Own-role reads must not depend on is_staff(). A combined OR policy can error
+-- (and look like "no admin access") if the helper is evaluated for every row.
+DROP POLICY IF EXISTS "Users read own roles" ON public.user_roles;
+CREATE POLICY "Users read own roles" ON public.user_roles
+FOR SELECT TO authenticated USING (user_id = auth.uid());
+
+DROP POLICY IF EXISTS "Staff read all roles" ON public.user_roles;
+CREATE POLICY "Staff read all roles" ON public.user_roles
+FOR SELECT TO authenticated USING (public.is_staff(auth.uid()));
+
 -- Repair the existing auth user if the profile/role was never created.
 INSERT INTO public.profiles (id, email, full_name, is_verified, status)
 SELECT
