@@ -1,4 +1,5 @@
 import {
+  Headphones,
   LayoutDashboard,
   type LucideIcon,
   PlaneLanding,
@@ -13,6 +14,7 @@ export const portalNav: NavItem[] = [
   { title: "My Itinerary", to: "/portal/itinerary", icon: RouteIcon },
   { title: "My Bookings", to: "/portal/bookings", icon: Ticket },
   { title: "Airport Transfers", to: "/portal/transfers", icon: PlaneLanding },
+  { title: "Support", to: "/portal/support", icon: Headphones },
 ];
 
 export const mobileNav: NavItem[] = portalNav;
