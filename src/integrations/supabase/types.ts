@@ -770,6 +770,7 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      ensure_designated_super_admin: { Args: Record<PropertyKey, never>; Returns: boolean }
       notify_staff: {
         Args: {
           _action_url: string

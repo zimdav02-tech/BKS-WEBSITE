@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { destinationForAccess, loadMyStaffAccess } from "@/hooks/useAdmin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,9 +38,16 @@ function AuthPage() {
   const [showReset, setShowReset] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/portal" });
-    });
+    let active = true;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session || !active) return;
+      const access = await loadMyStaffAccess();
+      if (active) navigate({ to: destinationForAccess(access) });
+    })();
+    return () => {
+      active = false;
+    };
   }, [navigate]);
 
   async function handleSignIn(e: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -50,13 +58,15 @@ function AuthPage() {
       email: String(form.get("email")),
       password: String(form.get("password")),
     });
-    setLoading(false);
     if (error) {
+      setLoading(false);
       toast.error("Could not sign in", { description: error.message });
       return;
     }
     toast.success("Welcome back");
-    navigate({ to: "/portal" });
+    const access = await loadMyStaffAccess();
+    setLoading(false);
+    navigate({ to: destinationForAccess(access) });
   }
 
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -67,7 +77,7 @@ function AuthPage() {
       email: String(form.get("email")),
       password: String(form.get("password")),
       options: {
-        emailRedirectTo: `${window.location.origin}/portal`,
+        emailRedirectTo: `${window.location.origin}/auth`,
         data: { full_name: String(form.get("name") ?? "") },
       },
     });
@@ -77,19 +87,23 @@ function AuthPage() {
       return;
     }
     toast.success("Account created", { description: "You can now sign in." });
-    navigate({ to: "/portal" });
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) return;
+    const access = await loadMyStaffAccess();
+    navigate({ to: destinationForAccess(access) });
   }
 
   async function handleGoogle(): Promise<void> {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/auth`,
     });
     if (result.error) {
       toast.error("Google sign-in failed");
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/portal" });
+    const access = await loadMyStaffAccess();
+    navigate({ to: destinationForAccess(access) });
   }
 
   async function handleResetPassword(): Promise<void> {
