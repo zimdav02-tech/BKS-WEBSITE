@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeInvalidate } from "@/hooks/useRealtime";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type Booking = Tables<"bookings">;
@@ -49,6 +50,11 @@ export function useProfile() {
 
 export function useBookings() {
   const { data: user } = useCurrentUser();
+  useRealtimeInvalidate(
+    user?.id ? `portal-bookings-${user.id}` : "portal-bookings-idle",
+    user?.id ? ["bookings"] : [],
+    user?.id ? `user_id=eq.${user.id}` : undefined,
+  );
   return useQuery({
     queryKey: ["bookings", user?.id],
     enabled: !!user,
@@ -213,6 +219,11 @@ export function useSavedServices() {
 
 export function useActivity(limit = 25) {
   const { data: user } = useCurrentUser();
+  useRealtimeInvalidate(
+    user?.id ? `portal-activity-${user.id}` : "portal-activity-idle",
+    user?.id ? ["activity_events"] : [],
+    user?.id ? `user_id=eq.${user.id}` : undefined,
+  );
   return useQuery({
     queryKey: ["activity", user?.id, limit],
     enabled: !!user,

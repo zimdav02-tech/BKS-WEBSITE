@@ -20,6 +20,7 @@ import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminModuleRouteImport } from './routes/_authenticated/admin/$module'
+import { Route as AuthenticatedAdminBookingsRouteImport } from './routes/_authenticated/admin/bookings'
 import { Route as AuthenticatedAdminExecutiveRouteImport } from './routes/_authenticated/admin/executive'
 import { Route as AuthenticatedAdminOperationsRouteImport } from './routes/_authenticated/admin/operations'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
@@ -82,6 +83,12 @@ const AuthenticatedAdminModuleRoute =
     path: '/$module',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminBookingsRoute =
+  AuthenticatedAdminBookingsRouteImport.update({
+    id: '/bookings',
+    path: '/bookings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminExecutiveRoute =
   AuthenticatedAdminExecutiveRouteImport.update({
     id: '/executive',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
   '/services/$slug': typeof ServicesSlugRoute
   '/services': typeof ServicesIndexRoute
   '/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
@@ -166,6 +175,7 @@ export interface FileRoutesById {
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/_authenticated/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/_authenticated/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/_authenticated/admin/operations': typeof AuthenticatedAdminOperationsRoute
   '/_authenticated/portal/bookings': typeof AuthenticatedPortalBookingsRoute
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services/'
     | '/admin/$module'
+    | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
     | '/portal/bookings'
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services'
     | '/admin/$module'
+    | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
     | '/portal/bookings'
@@ -222,6 +234,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services/'
     | '/_authenticated/admin/$module'
+    | '/_authenticated/admin/bookings'
     | '/_authenticated/admin/executive'
     | '/_authenticated/admin/operations'
     | '/_authenticated/portal/bookings'
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminModuleRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/bookings': {
+      id: '/_authenticated/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AuthenticatedAdminBookingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/executive': {
       id: '/_authenticated/admin/executive'
       path: '/executive'
@@ -368,6 +388,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminModuleRoute: typeof AuthenticatedAdminModuleRoute
+  AuthenticatedAdminBookingsRoute: typeof AuthenticatedAdminBookingsRoute
   AuthenticatedAdminExecutiveRoute: typeof AuthenticatedAdminExecutiveRoute
   AuthenticatedAdminOperationsRoute: typeof AuthenticatedAdminOperationsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -375,6 +396,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminModuleRoute: AuthenticatedAdminModuleRoute,
+  AuthenticatedAdminBookingsRoute: AuthenticatedAdminBookingsRoute,
   AuthenticatedAdminExecutiveRoute: AuthenticatedAdminExecutiveRoute,
   AuthenticatedAdminOperationsRoute: AuthenticatedAdminOperationsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
