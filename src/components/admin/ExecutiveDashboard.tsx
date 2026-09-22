@@ -121,7 +121,7 @@ function percent(part: number, whole: number) {
 }
 
 function formatDay(date: Date) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: ZONE, day: "2-digit", month: "short", year: "numeric" }).format(date);
+  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
 function formatWhen(iso: string) {
@@ -479,7 +479,7 @@ export function ExecutiveDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
         <AdminPageHeading
           eyebrow="Executive oversight"
@@ -575,7 +575,7 @@ export function ExecutiveDashboard() {
       </div>
 
       <Section title="Performance Analytics" hint="Trends for the selected period">
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid min-w-0 gap-5 lg:grid-cols-2">
           <TrendChart title="Revenue trend" data={model.trend} dataKey="revenue" config={revenueConfig} empty="No approved revenue in this period." />
           <TrendChart title="Booking trend" data={model.trend} dataKey="bookings" config={bookingConfig} empty="No bookings in this period." />
           <TrendChart title="Customer growth" data={model.trend} dataKey="customers" config={customerConfig} empty="No new customers in this period." />
@@ -599,7 +599,7 @@ export function ExecutiveDashboard() {
       </Section>
 
       <Section title="Business Performance" hint="Where revenue and demand are coming from">
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid min-w-0 gap-5 lg:grid-cols-2">
           <RankList title="Revenue by service" rows={model.revenueByService.map((row) => ({ label: row.label, value: money(row.value) }))} empty="No captured revenue to attribute." />
           <RankList title="Bookings by service" rows={model.serviceVolume.map((row) => ({ label: row.label, value: String(row.volume) }))} empty="No bookings or requests in this period." />
           <AdminPanel>
@@ -637,8 +637,8 @@ export function ExecutiveDashboard() {
         </div>
       </Section>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
-        <AdminPanel>
+      <div className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
+        <AdminPanel className="min-w-0">
           <h2 className="font-display text-lg font-bold">Financial Overview</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <Metric label="Revenue received" value={money(model.revenue)} />
@@ -646,7 +646,7 @@ export function ExecutiveDashboard() {
             <Metric label="Outstanding amounts" value={money(model.outstanding)} />
           </div>
           <h3 className="mt-6 text-sm font-semibold">Recent transactions</h3>
-          <div className="mt-3 overflow-x-auto">
+          <div className="mt-3 max-w-full overflow-x-auto">
             <table className="w-full min-w-[36rem] text-left text-sm">
               <thead className="border-b text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
                 <tr>
