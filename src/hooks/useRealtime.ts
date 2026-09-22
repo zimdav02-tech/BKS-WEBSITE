@@ -20,7 +20,7 @@ export function useRealtimeInvalidate(
 
   useEffect(() => {
     const channel = supabase.channel(channelName);
-    for (const table of key.split(",")) {
+    for (const table of key.split(",").filter(Boolean)) {
       channel.on(
         "postgres_changes",
         { event: "*", schema: "public", table, ...(filter ? { filter } : {}) } as never,

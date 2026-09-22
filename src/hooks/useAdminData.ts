@@ -8,7 +8,7 @@ import type { Tables } from "@/integrations/supabase/types";
 export type ServiceRequest = Tables<"service_requests">;
 export type AdminBooking = Tables<"bookings"> & {
   booking_services: Tables<"booking_services">[];
-  profiles: { full_name: string | null; email: string } | null;
+  profiles: { full_name: string | null; email: string; phone: string | null } | null;
 };
 
 const LIVE_TABLES = [
@@ -24,6 +24,7 @@ const LIVE_TABLES = [
   "apartments",
   "vehicles",
   "activity_events",
+  "audit_logs",
 ] as const;
 
 /** Staff-wide realtime channel: any change refreshes admin views. */
@@ -45,7 +46,7 @@ export function useAdminBookings() {
       if (ids.length) {
         const { data: people } = await supabase
           .from("profiles")
-          .select("id, full_name, email")
+          .select("id, full_name, email, phone")
           .in("id", ids);
         const map = new Map((people ?? []).map((p) => [p.id, p]));
         for (const row of rows) row.profiles = (map.get(row.user_id) as never) ?? null;
@@ -250,18 +251,22 @@ export function useUpdateBooking() {
       id,
       reference,
       patch,
+      action = "booking.update",
+      details,
     }: {
       id: string;
       reference: string;
       patch: Partial<Tables<"bookings">>;
+      action?: string;
+      details?: Record<string, unknown>;
     }) => {
       const { error } = await supabase.from("bookings").update(patch as never).eq("id", id);
       if (error) throw error;
       await logAudit({
-        action: "booking.update",
+        action,
         entityType: "bookings",
         entityId: id,
-        details: { reference, ...patch },
+        details: { reference, ...patch, ...details },
       });
     },
     onSuccess: () => {
@@ -320,6 +325,99 @@ export function useUpdatePayment() {
       void queryClient.invalidateQueries();
     },
     onError: (error: Error) => toast.error("Update failed", { description: error.message }),
+  });
+}
+
+export function useRescheduleBooking() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      reference,
+      startDate,
+      endDate,
+      services,
+    }: {
+      id: string;
+      reference: string;
+      startDate: string | null;
+      endDate: string | null;
+      services: { id: string; start_at: string | null; end_at: string | null }[];
+    }) => {
+      const { error } = await supabase
+        .from("bookings")
+        .update({ start_date: startDate, end_date: endDate } as never)
+        .eq("id", id);
+      if (error) throw error;
+      for (const service of services) {
+        const { error: serviceError } = await supabase
+          .from("booking_services")
+          .update({ start_at: service.start_at, end_at: service.end_at } as never)
+          .eq("id", service.id);
+        if (serviceError) throw serviceError;
+      }
+      await logAudit({
+        action: "booking.reschedule",
+        entityType: "bookings",
+        entityId: id,
+        details: { reference, start_date: startDate, end_date: endDate },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Booking rescheduled");
+      void queryClient.invalidateQueries();
+    },
+    onError: (error: Error) => toast.error("Reschedule failed", { description: error.message }),
+  });
+}
+
+export function useAddBookingNote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, reference, note }: { id: string; reference: string; note: string }) => {
+      await logAudit({
+        action: "booking.note",
+        entityType: "bookings",
+        entityId: id,
+        details: { reference, note },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Internal note added");
+      void queryClient.invalidateQueries();
+    },
+    onError: (error: Error) => toast.error("Could not save note", { description: error.message }),
+  });
+}
+
+export function useUpdateBookingService() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      id,
+      bookingId,
+      reference,
+      patch,
+    }: {
+      id: string;
+      bookingId: string;
+      reference: string;
+      patch: Partial<Tables<"booking_services">>;
+    }) => {
+      const { error } = await supabase.from("booking_services").update(patch as never).eq("id", id);
+      if (error) throw error;
+      await logAudit({
+        action: "booking.assign",
+        entityType: "bookings",
+        entityId: bookingId,
+        details: { reference, service_id: id, ...patch },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Assignment updated");
+      void queryClient.invalidateQueries();
+    },
+    onError: (error: Error) => toast.error("Assignment failed", { description: error.message }),
   });
 }
 

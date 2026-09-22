@@ -49,7 +49,15 @@ const tones: Record<string, string> = {
   refunded: "bg-secondary/10 text-foreground border-border",
 };
 
-export function StatusPill({ status, className }: { status: string; className?: string }) {
+export function StatusPill({
+  status,
+  label,
+  className,
+}: {
+  status: string;
+  label?: string;
+  className?: string;
+}) {
   return (
     <span
       className={cn(
@@ -58,7 +66,7 @@ export function StatusPill({ status, className }: { status: string; className?: 
         className,
       )}
     >
-      {status.replace(/_/g, " ")}
+      {label ?? status.replace(/_/g, " ")}
     </span>
   );
 }
