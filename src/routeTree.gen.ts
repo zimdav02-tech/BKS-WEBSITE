@@ -20,6 +20,7 @@ import { Route as ServicesIndexRouteImport } from './routes/services/index'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminModuleRouteImport } from './routes/_authenticated/admin/$module'
+import { Route as AuthenticatedAdminApartmentsRouteImport } from './routes/_authenticated/admin/apartments'
 import { Route as AuthenticatedAdminBookingsRouteImport } from './routes/_authenticated/admin/bookings'
 import { Route as AuthenticatedAdminExecutiveRouteImport } from './routes/_authenticated/admin/executive'
 import { Route as AuthenticatedAdminOperationsRouteImport } from './routes/_authenticated/admin/operations'
@@ -84,6 +85,12 @@ const AuthenticatedAdminModuleRoute =
     path: '/$module',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminApartmentsRoute =
+  AuthenticatedAdminApartmentsRouteImport.update({
+    id: '/apartments',
+    path: '/apartments',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminBookingsRoute =
   AuthenticatedAdminBookingsRouteImport.update({
     id: '/bookings',
@@ -143,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/admin/apartments': typeof AuthenticatedAdminApartmentsRoute
   '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/services/$slug': typeof ServicesSlugRoute
   '/services': typeof ServicesIndexRoute
   '/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/admin/apartments': typeof AuthenticatedAdminApartmentsRoute
   '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
@@ -184,6 +193,7 @@ export interface FileRoutesById {
   '/services/$slug': typeof ServicesSlugRoute
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/$module': typeof AuthenticatedAdminModuleRoute
+  '/_authenticated/admin/apartments': typeof AuthenticatedAdminApartmentsRoute
   '/_authenticated/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/_authenticated/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/_authenticated/admin/operations': typeof AuthenticatedAdminOperationsRoute
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services/'
     | '/admin/$module'
+    | '/admin/apartments'
     | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services'
     | '/admin/$module'
+    | '/admin/apartments'
     | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
@@ -246,6 +258,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/services/'
     | '/_authenticated/admin/$module'
+    | '/_authenticated/admin/apartments'
     | '/_authenticated/admin/bookings'
     | '/_authenticated/admin/executive'
     | '/_authenticated/admin/operations'
@@ -347,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminModuleRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/apartments': {
+      id: '/_authenticated/admin/apartments'
+      path: '/apartments'
+      fullPath: '/admin/apartments'
+      preLoaderRoute: typeof AuthenticatedAdminApartmentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/bookings': {
       id: '/_authenticated/admin/bookings'
       path: '/bookings'
@@ -408,6 +428,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminModuleRoute: typeof AuthenticatedAdminModuleRoute
+  AuthenticatedAdminApartmentsRoute: typeof AuthenticatedAdminApartmentsRoute
   AuthenticatedAdminBookingsRoute: typeof AuthenticatedAdminBookingsRoute
   AuthenticatedAdminExecutiveRoute: typeof AuthenticatedAdminExecutiveRoute
   AuthenticatedAdminOperationsRoute: typeof AuthenticatedAdminOperationsRoute
@@ -416,6 +437,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminModuleRoute: AuthenticatedAdminModuleRoute,
+  AuthenticatedAdminApartmentsRoute: AuthenticatedAdminApartmentsRoute,
   AuthenticatedAdminBookingsRoute: AuthenticatedAdminBookingsRoute,
   AuthenticatedAdminExecutiveRoute: AuthenticatedAdminExecutiveRoute,
   AuthenticatedAdminOperationsRoute: AuthenticatedAdminOperationsRoute,

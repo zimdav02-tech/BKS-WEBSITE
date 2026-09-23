@@ -313,8 +313,8 @@ export function BookingsDashboard() {
         return false;
       const day = row.start_date;
       if ((from || to) && !day) return false;
-      if (from && day < from) return false;
-      if (to && day > to) return false;
+      if (from && (!day || day < from)) return false;
+      if (to && (!day || day > to)) return false;
       if (!term) return true;
       const transferRows = transfersByBooking.get(row.id) ?? [];
       const haystack = [
