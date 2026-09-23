@@ -55,13 +55,17 @@ export function useBookings() {
     user?.id ? ["bookings"] : [],
     user?.id ? `user_id=eq.${user.id}` : undefined,
   );
+  useRealtimeInvalidate(
+    user?.id ? `portal-apartment-live-${user.id}` : "portal-apartment-live-idle",
+    user?.id ? ["apartments", "booking_services"] : [],
+  );
   return useQuery({
     queryKey: ["bookings", user?.id],
     enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("bookings")
-        .select("*, booking_services(*)")
+        .select("*, booking_services(*, apartments(*))")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -318,7 +322,13 @@ export function useSupportThread() {
       }
       const { error } = await supabase
         .from("messages")
-        .insert({ conversation_id: conversationId, sender_id: user.id, body, attachment_path, attachment_name });
+        .insert({
+          conversation_id: conversationId,
+          sender_id: user.id,
+          body,
+          attachment_path,
+          attachment_name,
+        });
       if (error) throw error;
       await supabase
         .from("conversations")

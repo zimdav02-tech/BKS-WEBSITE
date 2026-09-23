@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { LiveApartments } from "@/components/site/LiveApartments";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { getService } from "@/data/services";
 
@@ -33,7 +34,10 @@ export const Route = createFileRoute("/services/$slug")({
   ),
   notFoundComponent: () => (
     <SiteLayout>
-      <PageHero title="Service not found" subtitle="The service you're looking for doesn't exist." />
+      <PageHero
+        title="Service not found"
+        subtitle="The service you're looking for doesn't exist."
+      />
     </SiteLayout>
   ),
   component: ServiceDetail,
@@ -96,6 +100,7 @@ function ServiceDetail() {
           </Button>
         </aside>
       </section>
+      {slug === "furnished-apartments" && <LiveApartments />}
     </SiteLayout>
   );
 }

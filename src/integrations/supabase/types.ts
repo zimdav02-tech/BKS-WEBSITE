@@ -115,6 +115,7 @@ export type Database = {
           city: string | null
           created_at: string
           description: string | null
+          hold_reason: string | null
           house_rules: string | null
           id: string
           images: string[]
@@ -122,6 +123,7 @@ export type Database = {
           map_url: string | null
           name: string
           nightly_rate: number
+          unit_type: string | null
           updated_at: string
         }
         Insert: {
@@ -131,6 +133,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          hold_reason?: string | null
           house_rules?: string | null
           id?: string
           images?: string[]
@@ -138,6 +141,7 @@ export type Database = {
           map_url?: string | null
           name: string
           nightly_rate?: number
+          unit_type?: string | null
           updated_at?: string
         }
         Update: {
@@ -147,6 +151,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          hold_reason?: string | null
           house_rules?: string | null
           id?: string
           images?: string[]
@@ -154,6 +159,7 @@ export type Database = {
           map_url?: string | null
           name?: string
           nightly_rate?: number
+          unit_type?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -761,6 +767,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apartment_day_status: {
+        Args: { on_date?: string }
+        Returns: { apartment_id: string; status: string }[]
+      }
       ensure_designated_super_admin: { Args: never; Returns: boolean }
       grant_designated_super_admin: {
         Args: { _user_id: string }

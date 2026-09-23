@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, Car, MapPin, PlaneLanding, Route as RouteIcon, Truck } from "lucide-react";
-import { CardSkeletonGrid, EmptyState, ErrorState, PageHeading, PanelCard, StageTimeline } from "@/components/portal/ui";
+import {
+  CardSkeletonGrid,
+  EmptyState,
+  ErrorState,
+  PageHeading,
+  PanelCard,
+  StageTimeline,
+} from "@/components/portal/ui";
 import { bookingStageKeys, bookingStages, money, StatusPill } from "@/components/portal/status";
 import { useBookings } from "@/hooks/usePortal";
 
@@ -8,15 +15,30 @@ export const Route = createFileRoute("/_authenticated/portal/itinerary")({
   head: () => ({
     meta: [
       { title: "My Itinerary | BKS Customer Portal" },
-      { name: "description", content: "Follow every stage of your BKS journey — approval, payment, driver assignment, apartment readiness and arrival." },
+      {
+        name: "description",
+        content:
+          "Follow every stage of your BKS journey — approval, payment, driver assignment, apartment readiness and arrival.",
+      },
       { property: "og:title", content: "My Itinerary | BKS Customer Portal" },
-      { property: "og:description", content: "A live timeline of your BKS bookings from submission to completion." },
+      {
+        property: "og:description",
+        content: "A live timeline of your BKS bookings from submission to completion.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Itinerary,
 });
+
+function apartmentPlace(service: object) {
+  const apartment = (
+    service as { apartments?: { name?: string | null; city?: string | null } | null }
+  ).apartments;
+  if (!apartment) return "";
+  return [apartment.name, apartment.city].filter(Boolean).join(", ");
+}
 
 const kindIcon: Record<string, typeof Car> = {
   apartment: Building2,
@@ -95,6 +117,7 @@ function Itinerary() {
                             <p className="text-xs text-muted-foreground">
                               {s.start_at ? new Date(s.start_at).toLocaleDateString() : "TBC"}
                               {s.end_at ? ` → ${new Date(s.end_at).toLocaleDateString()}` : ""}
+                              {apartmentPlace(s) ? ` · ${apartmentPlace(s)}` : ""}
                             </p>
                           </div>
                           <span className="ml-auto text-sm font-semibold tabular-nums">
