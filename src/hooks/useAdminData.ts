@@ -129,7 +129,10 @@ export function useAdminConversations() {
         .order("last_message_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as (Tables<"conversations"> & {
-        messages: Pick<Tables<"messages">, "id" | "body" | "created_at" | "sender_id" | "read_at">[];
+        messages: Pick<
+          Tables<"messages">,
+          "id" | "body" | "created_at" | "sender_id" | "read_at"
+        >[];
       })[];
     },
   });
@@ -196,7 +199,11 @@ export function useAdminKpis() {
     queryKey: ["admin", "kpis"],
     queryFn: async () => {
       const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+      const startOfDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      ).toISOString();
       const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
       const count = (q: { count: number | null }) => q.count ?? 0;
 
@@ -211,15 +218,37 @@ export function useAdminKpis() {
         openConversations,
         approvedPayments,
       ] = await Promise.all([
-        supabase.from("bookings").select("id", { count: "exact", head: true }).gte("created_at", startOfDay),
-        supabase.from("bookings").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .gte("created_at", startOfDay),
+        supabase
+          .from("bookings")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "pending"),
         supabase.from("bookings").select("id", { count: "exact", head: true }),
-        supabase.from("service_requests").select("id", { count: "exact", head: true }).in("status", ["new", "in_review"]),
-        supabase.from("payments").select("id", { count: "exact", head: true }).in("status", ["pending", "under_review"]),
-        supabase.from("airport_transfers").select("id", { count: "exact", head: true }).gte("arrival_at", startOfDay),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase
+          .from("service_requests")
+          .select("id", { count: "exact", head: true })
+          .in("status", ["new", "in_review"]),
+        supabase
+          .from("payments")
+          .select("id", { count: "exact", head: true })
+          .in("status", ["pending", "under_review"]),
+        supabase
+          .from("airport_transfers")
+          .select("id", { count: "exact", head: true })
+          .gte("arrival_at", startOfDay),
+        supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "active"),
         supabase.from("conversations").select("id", { count: "exact", head: true }),
-        supabase.from("payments").select("amount").eq("status", "approved").gte("created_at", startOfMonth),
+        supabase
+          .from("payments")
+          .select("amount")
+          .eq("status", "approved")
+          .gte("created_at", startOfMonth),
       ]);
 
       const monthRevenue = (approvedPayments.data ?? []).reduce(
@@ -260,7 +289,10 @@ export function useUpdateBooking() {
       action?: string;
       details?: Record<string, unknown>;
     }) => {
-      const { error } = await supabase.from("bookings").update(patch as never).eq("id", id);
+      const { error } = await supabase
+        .from("bookings")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw error;
       await logAudit({
         action,
@@ -287,7 +319,10 @@ export function useUpdateRequest() {
       id: string;
       patch: Partial<Tables<"service_requests">>;
     }) => {
-      const { error } = await supabase.from("service_requests").update(patch as never).eq("id", id);
+      const { error } = await supabase
+        .from("service_requests")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw error;
       await logAudit({
         action: "service_request.update",
@@ -374,7 +409,15 @@ export function useRescheduleBooking() {
 export function useAddBookingNote() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, reference, note }: { id: string; reference: string; note: string }) => {
+    mutationFn: async ({
+      id,
+      reference,
+      note,
+    }: {
+      id: string;
+      reference: string;
+      note: string;
+    }) => {
       await logAudit({
         action: "booking.note",
         entityType: "bookings",
@@ -404,7 +447,10 @@ export function useUpdateBookingService() {
       reference: string;
       patch: Partial<Tables<"booking_services">>;
     }) => {
-      const { error } = await supabase.from("booking_services").update(patch as never).eq("id", id);
+      const { error } = await supabase
+        .from("booking_services")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw error;
       await logAudit({
         action: "booking.assign",
@@ -431,7 +477,10 @@ export function useUpdateTransfer() {
       id: string;
       patch: Partial<Tables<"airport_transfers">>;
     }) => {
-      const { error } = await supabase.from("airport_transfers").update(patch as never).eq("id", id);
+      const { error } = await supabase
+        .from("airport_transfers")
+        .update(patch as never)
+        .eq("id", id);
       if (error) throw error;
       await logAudit({
         action: "transfer.update",
@@ -446,4 +495,89 @@ export function useUpdateTransfer() {
     },
     onError: (error: Error) => toast.error("Update failed", { description: error.message }),
   });
+}
+
+const APARTMENT_BUCKET = "apartment-images";
+
+export type ApartmentInput = {
+  name: string;
+  unit_type: string | null;
+  address: string | null;
+  city: string | null;
+  description: string | null;
+  bedrooms: number;
+  nightly_rate: number;
+  amenities: string[];
+  house_rules: string | null;
+  map_url: string | null;
+  is_active: boolean;
+  hold_reason: string | null;
+  images?: string[];
+};
+
+export function useSaveApartment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, values }: { id?: string; values: ApartmentInput }) => {
+      if (id) {
+        const { error } = await supabase
+          .from("apartments")
+          .update(values as never)
+          .eq("id", id);
+        if (error) throw error;
+        await logAudit({
+          action: "apartment.update",
+          entityType: "apartments",
+          entityId: id,
+          details: {
+            name: values.name,
+            nightly_rate: values.nightly_rate,
+            is_active: values.is_active,
+          },
+        });
+        return id;
+      }
+      const { data, error } = await supabase
+        .from("apartments")
+        .insert(values as never)
+        .select("id")
+        .single();
+      if (error) throw error;
+      await logAudit({
+        action: "apartment.create",
+        entityType: "apartments",
+        entityId: data.id,
+        details: { name: values.name },
+      });
+      return data.id;
+    },
+    onSuccess: () => {
+      toast.success("Apartment saved");
+      void queryClient.invalidateQueries();
+    },
+    onError: (error: Error) =>
+      toast.error("Could not save apartment", { description: error.message }),
+  });
+}
+
+export async function uploadApartmentImage(apartmentId: string, file: File) {
+  const safeName = file.name.replace(/[^\w.-]+/g, "-").slice(0, 80);
+  const path = `${apartmentId}/${crypto.randomUUID()}-${safeName}`;
+  const { error } = await supabase.storage.from(APARTMENT_BUCKET).upload(path, file, {
+    contentType: file.type || "image/jpeg",
+    upsert: false,
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from(APARTMENT_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+export async function removeApartmentImage(url: string) {
+  const marker = `/${APARTMENT_BUCKET}/`;
+  const index = url.indexOf(marker);
+  if (index < 0) return;
+  const path = decodeURIComponent(url.slice(index + marker.length).split("?")[0]);
+  if (!path) return;
+  const { error } = await supabase.storage.from(APARTMENT_BUCKET).remove([path]);
+  if (error) throw error;
 }
