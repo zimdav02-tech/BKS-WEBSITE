@@ -755,51 +755,134 @@ export type Database = {
         }
         Relationships: []
       }
+      vehicle_maintenance: {
+        Row: {
+          cost: number | null
+          created_at: string
+          currency: string
+          id: string
+          maintenance_type: string
+          mileage: number | null
+          next_service_on: string | null
+          notes: string | null
+          recorded_by: string | null
+          serviced_on: string
+          status: Database["public"]["Enums"]["maintenance_status"]
+          updated_at: string
+          vehicle_id: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          currency?: string
+          id?: string
+          maintenance_type: string
+          mileage?: number | null
+          next_service_on?: string | null
+          notes?: string | null
+          recorded_by?: string | null
+          serviced_on?: string
+          status?: Database["public"]["Enums"]["maintenance_status"]
+          updated_at?: string
+          vehicle_id: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          currency?: string
+          id?: string
+          maintenance_type?: string
+          mileage?: number | null
+          next_service_on?: string | null
+          notes?: string | null
+          recorded_by?: string | null
+          serviced_on?: string
+          status?: Database["public"]["Enums"]["maintenance_status"]
+          updated_at?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_maintenance_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           category: string | null
           created_at: string
           daily_rate: number
           fuel_policy: string | null
+          fuel_type: string | null
+          hourly_rate: number
           id: string
           images: string[]
           insurance_info: string | null
           is_active: boolean
+          make: string | null
+          mileage: number | null
+          model: string | null
           name: string
+          notes: string | null
           registration: string | null
           seats: number
+          service_hold: Database["public"]["Enums"]["vehicle_status"] | null
+          status: Database["public"]["Enums"]["vehicle_status"]
           transmission: string | null
           updated_at: string
+          year: number | null
         }
         Insert: {
           category?: string | null
           created_at?: string
           daily_rate?: number
           fuel_policy?: string | null
+          fuel_type?: string | null
+          hourly_rate?: number
           id?: string
           images?: string[]
           insurance_info?: string | null
           is_active?: boolean
+          make?: string | null
+          mileage?: number | null
+          model?: string | null
           name: string
+          notes?: string | null
           registration?: string | null
           seats?: number
+          service_hold?: Database["public"]["Enums"]["vehicle_status"] | null
+          status?: Database["public"]["Enums"]["vehicle_status"]
           transmission?: string | null
           updated_at?: string
+          year?: number | null
         }
         Update: {
           category?: string | null
           created_at?: string
           daily_rate?: number
           fuel_policy?: string | null
+          fuel_type?: string | null
+          hourly_rate?: number
           id?: string
           images?: string[]
           insurance_info?: string | null
           is_active?: boolean
+          make?: string | null
+          mileage?: number | null
+          model?: string | null
           name?: string
+          notes?: string | null
           registration?: string | null
           seats?: number
+          service_hold?: Database["public"]["Enums"]["vehicle_status"] | null
+          status?: Database["public"]["Enums"]["vehicle_status"]
           transmission?: string | null
           updated_at?: string
+          year?: number | null
         }
         Relationships: []
       }
@@ -883,6 +966,7 @@ export type Database = {
         | "contract"
         | "rental_agreement"
         | "other"
+      maintenance_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       payment_status:
         | "pending"
         | "under_review"
@@ -916,6 +1000,13 @@ export type Database = {
         | "driver_waiting"
         | "picked_up"
         | "completed"
+      vehicle_status:
+        | "available"
+        | "reserved"
+        | "assigned"
+        | "in_use"
+        | "maintenance"
+        | "unavailable"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1080,6 +1171,7 @@ export const Constants = {
         "rental_agreement",
         "other",
       ],
+      maintenance_status: ["scheduled", "in_progress", "completed", "cancelled"],
       payment_status: [
         "pending",
         "under_review",
@@ -1116,6 +1208,14 @@ export const Constants = {
         "driver_waiting",
         "picked_up",
         "completed",
+      ],
+      vehicle_status: [
+        "available",
+        "reserved",
+        "assigned",
+        "in_use",
+        "maintenance",
+        "unavailable",
       ],
     },
   },

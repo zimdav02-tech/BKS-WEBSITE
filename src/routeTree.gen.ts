@@ -24,6 +24,7 @@ import { Route as AuthenticatedAdminApartmentsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminBookingsRouteImport } from './routes/_authenticated/admin/bookings'
 import { Route as AuthenticatedAdminExecutiveRouteImport } from './routes/_authenticated/admin/executive'
 import { Route as AuthenticatedAdminOperationsRouteImport } from './routes/_authenticated/admin/operations'
+import { Route as AuthenticatedAdminVehiclesRouteImport } from './routes/_authenticated/admin/vehicles'
 import { Route as AuthenticatedPortalIndexRouteImport } from './routes/_authenticated/portal/index'
 import { Route as AuthenticatedPortalBookingsRouteImport } from './routes/_authenticated/portal/bookings'
 import { Route as AuthenticatedPortalItineraryRouteImport } from './routes/_authenticated/portal/itinerary'
@@ -109,6 +110,12 @@ const AuthenticatedAdminOperationsRoute =
     path: '/operations',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminVehiclesRoute =
+  AuthenticatedAdminVehiclesRouteImport.update({
+    id: '/vehicles',
+    path: '/vehicles',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedPortalIndexRoute =
   AuthenticatedPortalIndexRouteImport.update({
     id: '/portal/',
@@ -154,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
+  '/admin/vehicles': typeof AuthenticatedAdminVehiclesRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
   '/portal/support': typeof AuthenticatedPortalSupportRoute
@@ -174,6 +182,7 @@ export interface FileRoutesByTo {
   '/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/admin/operations': typeof AuthenticatedAdminOperationsRoute
+  '/admin/vehicles': typeof AuthenticatedAdminVehiclesRoute
   '/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
   '/portal/support': typeof AuthenticatedPortalSupportRoute
@@ -197,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/bookings': typeof AuthenticatedAdminBookingsRoute
   '/_authenticated/admin/executive': typeof AuthenticatedAdminExecutiveRoute
   '/_authenticated/admin/operations': typeof AuthenticatedAdminOperationsRoute
+  '/_authenticated/admin/vehicles': typeof AuthenticatedAdminVehiclesRoute
   '/_authenticated/portal/bookings': typeof AuthenticatedPortalBookingsRoute
   '/_authenticated/portal/itinerary': typeof AuthenticatedPortalItineraryRoute
   '/_authenticated/portal/support': typeof AuthenticatedPortalSupportRoute
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
+    | '/admin/vehicles'
     | '/portal/bookings'
     | '/portal/itinerary'
     | '/portal/support'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/executive'
     | '/admin/operations'
+    | '/admin/vehicles'
     | '/portal/bookings'
     | '/portal/itinerary'
     | '/portal/support'
@@ -262,6 +274,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/bookings'
     | '/_authenticated/admin/executive'
     | '/_authenticated/admin/operations'
+    | '/_authenticated/admin/vehicles'
     | '/_authenticated/portal/bookings'
     | '/_authenticated/portal/itinerary'
     | '/_authenticated/portal/support'
@@ -388,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminOperationsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/vehicles': {
+      id: '/_authenticated/admin/vehicles'
+      path: '/vehicles'
+      fullPath: '/admin/vehicles'
+      preLoaderRoute: typeof AuthenticatedAdminVehiclesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/portal/': {
       id: '/_authenticated/portal/'
       path: '/portal'
@@ -432,6 +452,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBookingsRoute: typeof AuthenticatedAdminBookingsRoute
   AuthenticatedAdminExecutiveRoute: typeof AuthenticatedAdminExecutiveRoute
   AuthenticatedAdminOperationsRoute: typeof AuthenticatedAdminOperationsRoute
+  AuthenticatedAdminVehiclesRoute: typeof AuthenticatedAdminVehiclesRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -441,6 +462,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBookingsRoute: AuthenticatedAdminBookingsRoute,
   AuthenticatedAdminExecutiveRoute: AuthenticatedAdminExecutiveRoute,
   AuthenticatedAdminOperationsRoute: AuthenticatedAdminOperationsRoute,
+  AuthenticatedAdminVehiclesRoute: AuthenticatedAdminVehiclesRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
