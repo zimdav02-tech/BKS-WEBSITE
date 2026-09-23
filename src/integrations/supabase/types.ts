@@ -107,6 +107,47 @@ export type Database = {
           },
         ]
       }
+      apartment_blackouts: {
+        Row: {
+          apartment_id: string
+          created_at: string
+          created_by: string | null
+          end_date: string
+          id: string
+          reason: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          apartment_id: string
+          created_at?: string
+          created_by?: string | null
+          end_date: string
+          id?: string
+          reason?: string | null
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          apartment_id?: string
+          created_at?: string
+          created_by?: string | null
+          end_date?: string
+          id?: string
+          reason?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apartment_blackouts_apartment_id_fkey"
+            columns: ["apartment_id"]
+            isOneToOne: false
+            referencedRelation: "apartments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       apartments: {
         Row: {
           address: string | null
@@ -767,9 +808,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      apartment_day_status: {
-        Args: { on_date?: string }
-        Returns: { apartment_id: string; status: string }[]
+      apartment_busy_ranges: {
+        Args: { _apartment_id: string }
+        Returns: {
+          end_at: string
+          source: string
+          start_at: string
+        }[]
       }
       ensure_designated_super_admin: { Args: never; Returns: boolean }
       grant_designated_super_admin: {
@@ -780,6 +825,15 @@ export type Database = {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
+        }
+        Returns: boolean
+      }
+      is_apartment_available: {
+        Args: {
+          _apartment_id: string
+          _end: string
+          _exclude_service_id?: string
+          _start: string
         }
         Returns: boolean
       }
