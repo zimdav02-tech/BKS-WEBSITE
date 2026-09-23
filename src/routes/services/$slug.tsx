@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { FleetAvailability } from "@/components/site/FleetAvailability";
 import { PageHero, SiteLayout } from "@/components/site/SiteLayout";
 import { getService } from "@/data/services";
 
@@ -96,6 +97,12 @@ function ServiceDetail() {
           </Button>
         </aside>
       </section>
+
+      {slug === "car-hire" && (
+        <section className="container-bks pb-20">
+          <FleetAvailability />
+        </section>
+      )}
     </SiteLayout>
   );
 }

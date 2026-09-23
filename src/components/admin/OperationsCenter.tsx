@@ -105,6 +105,30 @@ function serviceLabel(booking: AdminBooking) {
 
 type FleetStatus = "available" | "assigned" | "maintenance" | "unavailable";
 
+function fleetBucket(
+  vehicle: { status: string; is_active: boolean; registration: string | null },
+  assigned: boolean,
+): FleetStatus {
+  switch (vehicle.status) {
+    case "available":
+      return "available";
+    case "reserved":
+    case "assigned":
+    case "in_use":
+      return "assigned";
+    case "maintenance":
+      return "maintenance";
+    case "unavailable":
+      return "unavailable";
+    default:
+      break;
+  }
+  if (!vehicle.is_active) return "maintenance";
+  if (assigned) return "assigned";
+  if (!vehicle.registration) return "unavailable";
+  return "available";
+}
+
 export function OperationsCenter() {
   const live = useAdminRealtime();
   const { isSuperAdmin, roles } = useMyRoles();
@@ -180,10 +204,7 @@ export function OperationsCenter() {
       unavailable: 0,
     };
     const rows = vehicleRows.map((vehicle) => {
-      let status: FleetStatus = "available";
-      if (!vehicle.is_active) status = "maintenance";
-      else if (assignedVehicleIds.has(vehicle.id)) status = "assigned";
-      else if (!vehicle.registration) status = "unavailable";
+      const status = fleetBucket(vehicle, assignedVehicleIds.has(vehicle.id));
       counts[status] += 1;
       return { ...vehicle, status };
     });
@@ -525,10 +546,17 @@ export function OperationsCenter() {
                 { title: "Requests", to: "/admin/requests", icon: ClipboardList },
               ].map((action) => (
                 <Button key={action.title} asChild variant="goldOutline" size="sm" className="h-11 justify-start">
-                  <Link to="/admin/$module" params={{ module: action.to.replace("/admin/", "") }}>
-                    <action.icon />
-                    {action.title}
-                  </Link>
+                  {action.to === "/admin/vehicles" ? (
+                    <Link to="/admin/vehicles">
+                      <action.icon />
+                      {action.title}
+                    </Link>
+                  ) : (
+                    <Link to="/admin/$module" params={{ module: action.to.replace("/admin/", "") }}>
+                      <action.icon />
+                      {action.title}
+                    </Link>
+                  )}
                 </Button>
               ))}
             </div>
