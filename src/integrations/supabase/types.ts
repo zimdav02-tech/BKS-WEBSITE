@@ -156,6 +156,7 @@ export type Database = {
           city: string | null
           created_at: string
           description: string | null
+          hold_reason: string | null
           house_rules: string | null
           id: string
           images: string[]
@@ -163,6 +164,7 @@ export type Database = {
           map_url: string | null
           name: string
           nightly_rate: number
+          unit_type: string | null
           updated_at: string
         }
         Insert: {
@@ -172,6 +174,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          hold_reason?: string | null
           house_rules?: string | null
           id?: string
           images?: string[]
@@ -179,6 +182,7 @@ export type Database = {
           map_url?: string | null
           name: string
           nightly_rate?: number
+          unit_type?: string | null
           updated_at?: string
         }
         Update: {
@@ -188,6 +192,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          hold_reason?: string | null
           house_rules?: string | null
           id?: string
           images?: string[]
@@ -195,6 +200,7 @@ export type Database = {
           map_url?: string | null
           name?: string
           nightly_rate?: number
+          unit_type?: string | null
           updated_at?: string
         }
         Relationships: []
